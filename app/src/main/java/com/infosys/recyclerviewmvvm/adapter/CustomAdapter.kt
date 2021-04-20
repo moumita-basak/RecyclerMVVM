@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.infosys.recyclerviewmvvm.adapter.listener.ClickListener
@@ -89,8 +91,10 @@ class CustomAdapter(private val mContext: Context, private var itemsList: List<I
 
     }
 }*/
-class CustomAdapter(dataModelList: ArrayList<ItemRow>, ctx: Context) : RecyclerView.Adapter<CustomAdapter.ViewHolder?>(), ClickListener {
-    private val dataModelList: ArrayList<ItemRow>
+class CustomAdapter(dataModelList: MutableLiveData<ArrayList<ItemRow>>, ctx: Context)
+    : RecyclerView.Adapter<CustomAdapter.ViewHolder?>(), ClickListener {
+//    private val dataModelList: ArrayList<ItemRow>
+    private val dataModelList: MutableLiveData<ArrayList<ItemRow>>
     private val context: Context
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): ViewHolder {
@@ -101,15 +105,14 @@ class CustomAdapter(dataModelList: ArrayList<ItemRow>, ctx: Context) : RecyclerV
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val dataModel: ItemRow = dataModelList[position]
+        val dataModel: ItemRow = dataModelList.value!![position]
         holder.itemRowBinding.setModel(dataModel)
         holder.bind(dataModel)
         holder.itemRowBinding.itemClickListener = this
-
     }
 
     override fun getItemCount(): Int {
-        return dataModelList.size
+        return dataModelList.value!!.size
     }
 
     inner class ViewHolder(itemRowBinding: ItemsBinding) : RecyclerView.ViewHolder(itemRowBinding.root) {
